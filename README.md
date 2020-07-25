@@ -1,1 +1,1 @@
-twitch-control-centre-test
+twitch-control-centre

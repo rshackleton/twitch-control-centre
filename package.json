@@ -1,6 +1,6 @@
 {
-  "name": "twitch-control-centre-test",
-  "productName": "twitch-control-centre-test",
+  "name": "twitch-control-centre",
+  "productName": "twitch-control-centre",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
