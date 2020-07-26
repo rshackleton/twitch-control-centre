@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
 import { Box, Input, FormLabel, Grid, Button } from '@chakra-ui/core';
+import React, { useEffect, useState } from 'react';
 
-import CredentialsManager from '../app/CredentialsManager';
+import CredentialsManager from '../renderer/CredentialsManager';
+
 const credentials = new CredentialsManager();
 
 const CredentialsForm: React.FC = () => {

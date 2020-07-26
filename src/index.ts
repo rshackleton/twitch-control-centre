@@ -1,6 +1,11 @@
 import { app, BrowserWindow } from 'electron';
+import CredentialsManager from './main/CredentialsManager';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+
+// Setup credentials manager to listen for events from renderer process.
+const credentials = new CredentialsManager();
+credentials.initialise();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
