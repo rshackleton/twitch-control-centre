@@ -26,6 +26,13 @@
  * ```
  */
 
+import React from 'react';
+import { render } from 'react-dom';
+
+import App from './App';
+
 import './index.css';
 
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+const rootElement = document.getElementById('root');
+
+render(React.createElement(App, {}), rootElement);
