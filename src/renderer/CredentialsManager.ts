@@ -2,10 +2,10 @@ import { ipcRenderer } from 'electron';
 
 class CredentialsManager {
   getTwitchPubSubKey(): Promise<string> {
-    return this.getPassword('twitch-pubsub-key');
+    return this.getPassword('twitch-refresh-token');
   }
   setTwitchPubSubKey(value: string): Promise<void> {
-    return this.setPassword('twitch-pubsub-key', value);
+    return this.setPassword('twitch-refresh-token', value);
   }
   getLifxKey(): Promise<string> {
     return this.getPassword('lifx-key');

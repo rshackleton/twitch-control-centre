@@ -1,11 +1,14 @@
-import { app, BrowserWindow } from 'electron';
+import { app, ipcMain, BrowserWindow } from 'electron';
+
 import CredentialsManager from './main/CredentialsManager';
+import TwitchApiClient from './main/TwitchPubSubClient';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
-// Setup credentials manager to listen for events from renderer process.
 const credentials = new CredentialsManager();
-credentials.initialise();
+
+const twitch = new TwitchApiClient();
+twitch.initialise();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -52,5 +55,12 @@ app.on('activate', () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+// Add listener to allow retrievable of credentials.
+ipcMain.handle('getPassword', async (_, args) => {
+  return credentials.getPassword(args.account);
+});
+
+// Add listener to allow updating of credentials.
+ipcMain.handle('setPassword', async (_, args) => {
+  await credentials.setPassword(args.account, args.value);
+});

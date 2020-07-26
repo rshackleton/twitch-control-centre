@@ -1,40 +1,20 @@
-import { ipcMain } from 'electron';
 import keytar from 'keytar';
 
 const SERVICE_NAME = 'rs.twitchcc';
 
-type IpcMainEventHandlerAsync<TArg, TResult> = (
-  event: Electron.IpcMainInvokeEvent,
-  argument: TArg,
-) => Promise<TResult>;
-
-interface GetPasswordArgs {
-  account: string;
-}
-
-interface SetPasswordArgs {
-  account: string;
-  value?: string | null;
-}
-
 class CredentialsManager {
-  initialise(): void {
-    ipcMain.handle('getPassword', this.getPassword);
-    ipcMain.handle('setPassword', this.setPassword);
+  async getPassword(account: string): Promise<string> {
+    return keytar.getPassword(SERVICE_NAME, account);
   }
 
-  private getPassword: IpcMainEventHandlerAsync<GetPasswordArgs, string> = async (_, args) => {
-    return keytar.getPassword(SERVICE_NAME, args.account);
-  };
-
-  private setPassword: IpcMainEventHandlerAsync<SetPasswordArgs, void> = async (_, args) => {
-    if (!args.value?.length) {
-      await keytar.deletePassword(SERVICE_NAME, args.account);
+  async setPassword(account: string, value: string | null): Promise<void> {
+    if (!value?.length) {
+      await keytar.deletePassword(SERVICE_NAME, account);
       return;
     }
 
-    await keytar.setPassword(SERVICE_NAME, args.account, args.value);
-  };
+    await keytar.setPassword(SERVICE_NAME, account, value);
+  }
 }
 
 export default CredentialsManager;
