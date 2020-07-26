@@ -4,6 +4,7 @@ const plugins = require('./webpack.plugins');
 // @note: This is to enable access to global variable for some imports.
 rules.push({
   test: /\.js$/,
+  exclude: /electron/,
   include: /node_modules/,
   use: [
     {
