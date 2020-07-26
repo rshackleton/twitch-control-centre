@@ -1,5 +1,5 @@
-import React from 'react';
 import { ThemeProvider, theme, useColorMode, ITheme } from '@chakra-ui/core';
+import React from 'react';
 
 const lightTheme: ITheme = {
   ...theme,
@@ -15,7 +15,7 @@ const darkTheme: ITheme = {
   },
 };
 
-const CustomThemeProvider: React.FC<{}> = ({ children }) => {
+const CustomThemeProvider: React.FC = ({ children }) => {
   const { colorMode } = useColorMode();
 
   const currentTheme = colorMode === 'light' ? lightTheme : darkTheme;
