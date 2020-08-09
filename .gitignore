@@ -87,3 +87,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Env variables
+env-variables.json

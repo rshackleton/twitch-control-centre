@@ -1,8 +1,14 @@
 import { ApiClient, HelixUser, StaticAuthProvider, RefreshableAuthProvider } from 'twitch';
 
-import PubSubClient, { PubSubRedemptionMessage, PubSubListener } from 'twitch-pubsub-client';
+import { PubSubClient, PubSubRedemptionMessage, PubSubListener } from 'twitch-pubsub-client';
+
+import envVariables from '../../env-variables.json';
+
+import { Credentials } from '../enums/Credentials';
 
 import CredentialsManager from './CredentialsManager';
+
+const { twitchAppClientId, twitchAppClientSecret } = envVariables;
 
 class TwitchApiClient {
   private apiClient: ApiClient;
@@ -23,8 +29,8 @@ class TwitchApiClient {
     // 4. Profit.
 
     // Managed using credentials form.
-    const clientId = await this.credentials.getPassword('twitch-client-id');
-    const clientSecret = await this.credentials.getPassword('twitch-client-secret');
+    const clientId = twitchAppClientId;
+    const clientSecret = twitchAppClientSecret;
 
     // Managed using OAuth flow.
     const accessToken = await this.credentials.getPassword('twitch-access-token');
@@ -36,14 +42,16 @@ class TwitchApiClient {
         clientSecret,
         refreshToken,
         onRefresh: async (token): Promise<void> => {
-          await this.credentials.setPassword('twitch-access-token', token.accessToken);
-          await this.credentials.setPassword('twitch-refresh-token', token.refreshToken);
+          await this.credentials.setPassword(Credentials.TWITCH_ACCESS_TOKEN, token.accessToken);
+          await this.credentials.setPassword(Credentials.TWITCH_REFRESH_TOKEN, token.refreshToken);
         },
       }),
     });
 
     // Fetch user info for token provided.
     this.userInfo = await this.apiClient.helix.users.getMe();
+
+    console.log(this.userInfo.displayName);
 
     // Create PubSub client.
     this.pubSubClient = new PubSubClient();
