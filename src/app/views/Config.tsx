@@ -41,17 +41,20 @@ const Config: React.FC<ConfigProps> = () => {
         Config
       </Heading>
 
+      <Grid alignItems="center" gap={4} gridTemplateColumns="300px 1fr" mb={4}>
+        <FormLabel m={0}>Reward ID:</FormLabel>
+        <FormLabel m={0}>State:</FormLabel>
+      </Grid>
+
       <Grid
         alignItems="center"
         gap={4}
-        gridTemplateColumns="200px 1fr min-content min-content"
+        gridTemplateColumns="300px 1fr min-content min-content"
         mb={4}
+        maxHeight={300}
+        overflow="auto"
+        pr={4}
       >
-        <FormLabel m={0}>Reward ID:</FormLabel>
-        <FormLabel gridColumn="span 3" m={0}>
-          State:
-        </FormLabel>
-
         {Object.entries(lightStates).map(([key, value]) => (
           <Fragment key={key}>
             <Code bg="none">{key}</Code>

@@ -1,36 +1,14 @@
 import { Box, FormControl, FormLabel, Heading, Switch, Textarea } from '@chakra-ui/core';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { TwitchRedemptionData } from '../../electron/ipc/TwitchHandler';
-
-import TwitchService from '../services/TwitchService';
+import { useTwitchContext } from '../components/TwitchProvider';
 
 interface TwitchProps {
   path: string;
 }
 
-const service = new TwitchService();
-
 const Twitch: React.FC<TwitchProps> = () => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [redemption, setRedemption] = useState<TwitchRedemptionData>(null);
-  const [log, setLog] = useState<string[]>([]);
-
-  useEffect(() => {
-    return (): void => {
-      service.stop(onChannelPointRedemption);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!redemption) {
-      return;
-    }
-
-    const ts = new Date().toISOString();
-    const newLine = `${ts}: ${redemption.id} : ${redemption.rewardName} - Redeemed by ${redemption.userId} : ${redemption.userDisplayName}`;
-    setLog([newLine, ...log]);
-  }, [redemption]);
+  const { isEnabled, log, toggle } = useTwitchContext() ?? {};
 
   return (
     <Box>
@@ -46,20 +24,7 @@ const Twitch: React.FC<TwitchProps> = () => {
           mb={4}
         >
           <FormLabel>Enabled: </FormLabel>
-          <Switch
-            isChecked={isEnabled}
-            onChange={async (event): Promise<void> => {
-              event.preventDefault();
-
-              if (isEnabled) {
-                await service.stop(onChannelPointRedemption);
-              } else {
-                await service.start(onChannelPointRedemption);
-              }
-
-              setIsEnabled(!isEnabled);
-            }}
-          />
+          <Switch isChecked={isEnabled} onChange={toggle} />
         </FormControl>
 
         <Heading size="xs" mb={4}>
@@ -77,14 +42,6 @@ const Twitch: React.FC<TwitchProps> = () => {
       </Box>
     </Box>
   );
-
-  function onChannelPointRedemption(
-    event: Electron.IpcRendererEvent,
-    data: TwitchRedemptionData,
-  ): void {
-    console.log('Redemption:', data);
-    setRedemption(data);
-  }
 };
 
 export default Twitch;
