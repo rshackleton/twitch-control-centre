@@ -1,18 +1,24 @@
-import { CSSReset, ColorModeProvider } from '@chakra-ui/core';
+import { CSSReset, ThemeProvider, ColorModeProvider, GlobalStyle } from '@chakra-ui/core';
 import React from 'react';
 
-import CustomThemeProvider from './CustomThemeProvider';
+import theme from './config/theme';
 
 import Root from './views/Root';
 
 const App: React.FC<{}> = () => {
+  console.log(theme.config);
+
   return (
-    <ColorModeProvider>
-      <CustomThemeProvider>
+    <ThemeProvider theme={theme}>
+      <ColorModeProvider
+        defaultValue={theme?.config?.initialColorMode}
+        useSystemColorMode={theme?.config?.useSystemColorMode}
+      >
         <CSSReset />
+        <GlobalStyle />
         <Root />
-      </CustomThemeProvider>
-    </ColorModeProvider>
+      </ColorModeProvider>
+    </ThemeProvider>
   );
 };
 

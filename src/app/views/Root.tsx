@@ -1,13 +1,51 @@
+import { Box, Flex, Switch, useColorMode, Grid } from '@chakra-ui/core';
+import { Router, Link, LocationProvider, createMemorySource, createHistory } from '@reach/router';
 import React from 'react';
-import { Box } from '@chakra-ui/core';
 
-import CredentialsForm from '../components/CredentialsForm';
+import Credentials from './Credentials';
+import Home from './Home';
+import Lifx from './Lifx';
+
+const source = createMemorySource('/');
+const history = createHistory(source);
 
 const Root: React.FC = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+
   return (
-    <Box height="100%" width="100%" display="grid" alignItems="center" justifyContent="center">
-      <CredentialsForm />
-    </Box>
+    <LocationProvider history={history}>
+      <Grid as="header" alignItems="center" gap={8} gridTemplateColumns="1fr min-content">
+        <Box as="nav">
+          <Flex as="ul" flexDir="row">
+            <Box as="li" listStyleType="none">
+              <Box as={Link} display="block" to="/" p={4}>
+                Home
+              </Box>
+            </Box>
+            <Box as="li" listStyleType="none">
+              <Box as={Link} display="block" to="/credentials" p={4}>
+                Credentials
+              </Box>
+            </Box>
+            <Box as="li" listStyleType="none">
+              <Box as={Link} display="block" to="/lifx" p={4}>
+                Lifx
+              </Box>
+            </Box>
+          </Flex>
+        </Box>
+
+        <Switch mr={4} isChecked={colorMode === 'dark'} onChange={toggleColorMode} />
+      </Grid>
+
+      <Box m={4}>
+        <Router>
+          <Home path="/" />
+          <Credentials path="credentials" />
+          <Lifx path="lifx" />
+        </Router>
+      </Box>
+    </LocationProvider>
   );
 };
 
