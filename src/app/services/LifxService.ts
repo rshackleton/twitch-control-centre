@@ -22,7 +22,6 @@ export interface LifxLightGroup {
 }
 
 export default class LifxService {
-  constructor() {}
   async getLights(): Promise<LifxLight[]> {
     const args: LifxHandlerArgs = {
       method: 'GET',
