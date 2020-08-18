@@ -5,6 +5,7 @@ import React from 'react';
 import Credentials from './Credentials';
 import Home from './Home';
 import Lifx from './Lifx';
+import Twitch from './Twitch';
 
 const source = createMemorySource('/');
 const history = createHistory(source);
@@ -20,6 +21,11 @@ const Root: React.FC = () => {
             <Box as="li" listStyleType="none">
               <Box as={Link} display="block" to="/" p={4}>
                 Home
+              </Box>
+            </Box>
+            <Box as="li" listStyleType="none">
+              <Box as={Link} display="block" to="/twitch" p={4}>
+                Twitch
               </Box>
             </Box>
             <Box as="li" listStyleType="none">
@@ -43,6 +49,7 @@ const Root: React.FC = () => {
           <Home path="/" />
           <Credentials path="credentials" />
           <Lifx path="lifx" />
+          <Twitch path="twitch" />
         </Router>
       </Box>
     </LocationProvider>

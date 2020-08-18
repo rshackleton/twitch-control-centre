@@ -1,6 +1,5 @@
+import { Box, Heading } from '@chakra-ui/core';
 import React from 'react';
-import { Link } from '@reach/router';
-import { Heading } from '@chakra-ui/core';
 
 interface HomeProps {
   path: string;
@@ -8,9 +7,9 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = () => {
   return (
-    <div>
+    <Box>
       <Heading size="md">Home</Heading>
-    </div>
+    </Box>
   );
 };
 

@@ -5,10 +5,12 @@ import CredentialsHandler from './electron/ipc/CredentialsHandler';
 
 import MainWindow from './electron/MainWindow';
 import LifxHandler from './electron/ipc/LifxHandler';
+import TwitchHandler from './electron/ipc/TwitchHandler';
 
 const authHandler = new AuthHandler();
 const credentialsHandler = new CredentialsHandler();
 const lifxHandler = new LifxHandler();
+const twitchHandler = new TwitchHandler();
 
 const mainWindow = new MainWindow();
 
@@ -26,6 +28,7 @@ app.on('ready', async () => {
   authHandler.register(mainWindow.window);
   credentialsHandler.register();
   lifxHandler.register();
+  twitchHandler.register(mainWindow.window);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

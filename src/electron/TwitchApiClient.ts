@@ -60,6 +60,8 @@ class TwitchApiClient {
 
   /** Register a listener to channel point redemption topic. */
   redemption(callback: (message: PubSubRedemptionMessage) => void): Promise<PubSubListener> {
+    console.log('TwitchApiClient.redemption: Called');
+
     return this.pubSubClient.onRedemption(this.userInfo, callback);
   }
 }

@@ -1,4 +1,4 @@
-import { Button, Heading, Box, Grid } from '@chakra-ui/core';
+import { Box, Button, Grid, Heading } from '@chakra-ui/core';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useLocalStorage } from 'react-use';
 
@@ -11,8 +11,8 @@ interface LifxProps {
 }
 
 const Lifx: React.FC<LifxProps> = () => {
-  const [lights, setLights] = useState<LifxLight[]>([]);
   const [selectedId, setSelectedId] = useLocalStorage('lifx-light-id', '');
+  const [lights, setLights] = useState<LifxLight[]>([]);
 
   useEffect(() => {
     doAsync();
@@ -40,7 +40,7 @@ const Lifx: React.FC<LifxProps> = () => {
   }, []);
 
   return (
-    <div>
+    <Box>
       <Heading size="md" mb={4}>
         LIFX
       </Heading>
@@ -96,7 +96,7 @@ const Lifx: React.FC<LifxProps> = () => {
           );
         })}
       </Grid>
-    </div>
+    </Box>
   );
 };
 
