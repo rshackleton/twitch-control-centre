@@ -3,4 +3,5 @@ export enum IPCEvents {
   SET_CREDENTIAL = 'credential-set',
   TWITCH_AUTH_CLEAR = 'twitch-auth-clear',
   TWITCH_AUTH_START = 'twitch-auth-start',
+  LIFX_CALL_API = 'lifx-call-api',
 }

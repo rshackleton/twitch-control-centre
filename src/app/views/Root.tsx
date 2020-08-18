@@ -23,13 +23,13 @@ const Root: React.FC = () => {
               </Box>
             </Box>
             <Box as="li" listStyleType="none">
-              <Box as={Link} display="block" to="/credentials" p={4}>
-                Credentials
+              <Box as={Link} display="block" to="/lifx" p={4}>
+                LIFX
               </Box>
             </Box>
             <Box as="li" listStyleType="none">
-              <Box as={Link} display="block" to="/lifx" p={4}>
-                Lifx
+              <Box as={Link} display="block" to="/credentials" p={4}>
+                Credentials
               </Box>
             </Box>
           </Flex>

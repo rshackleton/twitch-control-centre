@@ -4,9 +4,11 @@ import AuthHandler from './electron/ipc/AuthHandler';
 import CredentialsHandler from './electron/ipc/CredentialsHandler';
 
 import MainWindow from './electron/MainWindow';
+import LifxHandler from './electron/ipc/LifxHandler';
 
 const authHandler = new AuthHandler();
 const credentialsHandler = new CredentialsHandler();
+const lifxHandler = new LifxHandler();
 
 const mainWindow = new MainWindow();
 
@@ -21,8 +23,9 @@ if (require('electron-squirrel-startup')) {
 app.on('ready', async () => {
   await mainWindow.showWindow();
 
-  credentialsHandler.register();
   authHandler.register(mainWindow.window);
+  credentialsHandler.register();
+  lifxHandler.register();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
