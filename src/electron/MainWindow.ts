@@ -20,7 +20,7 @@ class MainWindow {
     this.window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
-    this.window.webContents.openDevTools();
+    // this.window.webContents.openDevTools();
   }
 }
 
