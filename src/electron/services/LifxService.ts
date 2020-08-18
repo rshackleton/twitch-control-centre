@@ -25,9 +25,12 @@ export default class LifxService {
     });
   }
 
-  async setState(state: Lifx.LightState): Promise<Lifx.SetStateResponse | Lifx.ErrorResponse> {
+  async setState(
+    selector: string,
+    state: Lifx.LightState,
+  ): Promise<Lifx.SetStateResponse | Lifx.ErrorResponse> {
     return this.call<Lifx.LightState, Lifx.SetStateResponse>({
-      url: 'https://api.lifx.com/v1/lights/group_id:daf2998fadd22e2159497b21f315837c/state',
+      url: `https://api.lifx.com/v1/lights/${selector}/state`,
       data: state,
       method: 'PUT',
     });

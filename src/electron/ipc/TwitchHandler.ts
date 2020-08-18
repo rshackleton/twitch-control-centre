@@ -76,7 +76,11 @@ export default class TwitchHandler {
     const state = this.config.getStateForReward(message.rewardId);
 
     if (state) {
-      this.lifxService.setState(state);
+      const id = this.config.get('selectedLightId');
+
+      if (id) {
+        this.lifxService.setState(`id:${id}`, state);
+      }
     }
   }
 }
