@@ -2,7 +2,9 @@ import { Box, Button, Grid, Heading } from '@chakra-ui/core';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useLocalStorage } from 'react-use';
 
-import LifxService, { LifxLight } from '../services/LifxService';
+import { Lifx } from '../../lifx';
+
+import LifxService from '../services/LifxService';
 
 const service = new LifxService();
 
@@ -12,7 +14,7 @@ interface LifxProps {
 
 const Lifx: React.FC<LifxProps> = () => {
   const [selectedId, setSelectedId] = useLocalStorage('lifx-light-id', '');
-  const [lights, setLights] = useState<LifxLight[]>([]);
+  const [lights, setLights] = useState<Lifx.Light[]>([]);
 
   useEffect(() => {
     doAsync();
@@ -102,7 +104,7 @@ const Lifx: React.FC<LifxProps> = () => {
 
 export default Lifx;
 
-function getLightName(light: LifxLight): string {
+function getLightName(light: Lifx.Light): string {
   const name = `${light.label.trim()} (${light.group?.name.trim()})`;
   return name;
 }

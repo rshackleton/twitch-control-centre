@@ -2,27 +2,10 @@ import { ipcRenderer } from 'electron';
 
 import { LifxHandlerArgs } from '../../electron/ipc/LifxHandler';
 import { IPCEvents } from '../../enums/IPCEvents';
-
-export interface LifxLight {
-  id: string;
-  brightness: number;
-  color: {
-    hue: number;
-    kelvin: number;
-    saturation: number;
-  };
-  group: LifxLightGroup;
-  label: string;
-  power: 'on' | 'off';
-}
-
-export interface LifxLightGroup {
-  id: string;
-  name: string;
-}
+import { Lifx } from '../../lifx';
 
 export default class LifxService {
-  async getLights(): Promise<LifxLight[]> {
+  async getLights(): Promise<Lifx.Light[]> {
     const args: LifxHandlerArgs = {
       method: 'GET',
       url: 'https://api.lifx.com/v1/lights/all',

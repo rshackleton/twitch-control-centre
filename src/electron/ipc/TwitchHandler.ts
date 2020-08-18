@@ -3,6 +3,9 @@ import { PubSubRedemptionMessage, PubSubListener, PubSubMessage } from 'twitch-p
 
 import { IPCEvents } from '../../enums/IPCEvents';
 
+import ConfigurationService from '../services/ConfigurationService';
+import LifxService from '../services/LifxService';
+
 import TwitchApiClient from '../TwitchApiClient';
 
 const client = new TwitchApiClient();
@@ -16,8 +19,15 @@ export interface TwitchRedemptionData {
 }
 
 export default class TwitchHandler {
+  private config: ConfigurationService;
+  private lifxService: LifxService;
   private subscription: PubSubListener<PubSubMessage> | null = null;
   private window: BrowserWindow | null = null;
+
+  constructor() {
+    this.config = new ConfigurationService();
+    this.lifxService = new LifxService();
+  }
 
   async register(window: BrowserWindow): Promise<void> {
     this.window = window;
@@ -37,14 +47,17 @@ export default class TwitchHandler {
     ipcMain.handle(IPCEvents.TWITCH_PUBSUB_STOP, () => {
       console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_STOP}: Called`);
 
-      this.subscription.remove();
-      this.subscription = null;
+      if (this.subscription) {
+        this.subscription.remove();
+        this.subscription = null;
+      }
     });
   }
 
   listener(message: PubSubRedemptionMessage): void {
     console.log(`TwitchHandler: Called listener`, message);
 
+    // Send event to window to display in output log.
     const webContents = this.window?.webContents;
 
     if (webContents) {
@@ -57,6 +70,13 @@ export default class TwitchHandler {
       };
 
       webContents.send(IPCEvents.TWITCH_PUBSUB_EVENT, data);
+    }
+
+    // Trigger appropriate LIFX change.
+    const state = this.config.getStateForReward(message.rewardId);
+
+    if (state) {
+      this.lifxService.setState(state);
     }
   }
 }

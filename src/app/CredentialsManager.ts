@@ -18,12 +18,12 @@ class CredentialsManager {
   }
 
   private async getPassword(account: string): Promise<string> {
-    const result = await ipcRenderer.invoke(IPCEvents.GET_CREDENTIAL, { account });
+    const result = await ipcRenderer.invoke(IPCEvents.CREDENTIALS_GET, { account });
     return result as string;
   }
 
   private async setPassword(account: string, value: string | null | undefined): Promise<void> {
-    await ipcRenderer.invoke(IPCEvents.SET_CREDENTIAL, { account, value });
+    await ipcRenderer.invoke(IPCEvents.CREDENTIALS_SET, { account, value });
   }
 }
 

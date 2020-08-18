@@ -13,12 +13,12 @@ class CredentialsHandler {
 
   register(): void {
     // Add listener to allow retrievable of credentials.
-    ipcMain.handle(IPCEvents.GET_CREDENTIAL, async (_, args) => {
+    ipcMain.handle(IPCEvents.CREDENTIALS_GET, async (_, args) => {
       return this.credentials.getPassword(args.account);
     });
 
     // Add listener to allow updating of credentials.
-    ipcMain.handle(IPCEvents.SET_CREDENTIAL, async (_, args) => {
+    ipcMain.handle(IPCEvents.CREDENTIALS_SET, async (_, args) => {
       await this.credentials.setPassword(args.account, args.value);
     });
   }

@@ -2,6 +2,7 @@ import { Box, Flex, Switch, useColorMode, Grid } from '@chakra-ui/core';
 import { Router, Link, LocationProvider, createMemorySource, createHistory } from '@reach/router';
 import React from 'react';
 
+import Config from './Config';
 import Credentials from './Credentials';
 import Home from './Home';
 import Lifx from './Lifx';
@@ -34,6 +35,11 @@ const Root: React.FC = () => {
               </Box>
             </Box>
             <Box as="li" listStyleType="none">
+              <Box as={Link} display="block" to="/config" p={4}>
+                Config
+              </Box>
+            </Box>
+            <Box as="li" listStyleType="none">
               <Box as={Link} display="block" to="/credentials" p={4}>
                 Credentials
               </Box>
@@ -47,6 +53,7 @@ const Root: React.FC = () => {
       <Box m={4}>
         <Router>
           <Home path="/" />
+          <Config path="config" />
           <Credentials path="credentials" />
           <Lifx path="lifx" />
           <Twitch path="twitch" />
