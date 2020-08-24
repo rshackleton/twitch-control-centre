@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 
 import { LifxHandlerArgs } from '../../electron/ipc/LifxHandler';
 import { IPCEvents } from '../../enums/IPCEvents';
-import { Lifx } from '../../lifx';
+import { Lifx } from '../../types/lifx';
 
 export default class LifxService {
   async getLights(): Promise<Lifx.Light[]> {

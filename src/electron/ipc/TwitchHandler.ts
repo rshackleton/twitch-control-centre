@@ -73,14 +73,13 @@ export default class TwitchHandler {
     }
 
     // Trigger appropriate LIFX change.
-    const state = this.config.getStateForReward(message.rewardId);
+    const appConfig = this.config.get();
+    const states = appConfig.lifxStates ?? {};
+    const state = states[message.rewardId];
+    const id = appConfig.selectedLightId;
 
-    if (state) {
-      const id = this.config.get('selectedLightId');
-
-      if (id) {
-        this.lifxService.setState(`id:${id}`, state);
-      }
+    if (id && state) {
+      this.lifxService.setState(`id:${id}`, state);
     }
   }
 }

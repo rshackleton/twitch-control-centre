@@ -1,10 +1,9 @@
-import { ipcRenderer } from 'electron';
 import { Box, Button, Grid, Heading } from '@chakra-ui/core';
 import React, { Fragment, useEffect, useState } from 'react';
 
-import { IPCEvents } from '../../enums/IPCEvents';
-import { Lifx } from '../../lifx';
+import { Lifx } from '../../types/lifx';
 
+import { useAppConfig } from '../components/AppConfigProvider';
 import LifxService from '../services/LifxService';
 
 const service = new LifxService();
@@ -14,7 +13,10 @@ interface LifxProps {
 }
 
 const Lifx: React.FC<LifxProps> = () => {
-  const [selectedId, setSelectedId] = useState('');
+  const { getKey, setKey } = useAppConfig();
+
+  const selectedLightId = getKey('selectedLightId') ?? '';
+
   const [lights, setLights] = useState<Lifx.Light[]>([]);
 
   useEffect(() => {
@@ -39,15 +41,6 @@ const Lifx: React.FC<LifxProps> = () => {
           return 0;
         }),
       );
-    }
-  }, []);
-
-  useEffect(() => {
-    doAsync();
-
-    async function doAsync(): Promise<void> {
-      const id = await getSelectedLight();
-      setSelectedId(id);
     }
   }, []);
 
@@ -96,12 +89,11 @@ const Lifx: React.FC<LifxProps> = () => {
               </Button>
 
               <Button
-                isDisabled={selectedId === light.id}
+                isDisabled={selectedLightId === light.id}
                 onClick={async (event): Promise<void> => {
                   event.preventDefault();
-                  await setSelectedLight(light.id);
-                  const id = await getSelectedLight();
-                  setSelectedId(id);
+
+                  setKey('selectedLightId', light.id);
                 }}
               >
                 Select
@@ -119,12 +111,4 @@ export default Lifx;
 function getLightName(light: Lifx.Light): string {
   const name = `${light.label.trim()} (${light.group?.name.trim()})`;
   return name;
-}
-
-async function getSelectedLight(): Promise<string> {
-  return ipcRenderer.invoke(IPCEvents.CONFIG_GET_KEY, { key: 'selectedLightId' });
-}
-
-function setSelectedLight(value: string): Promise<void> {
-  return ipcRenderer.invoke(IPCEvents.CONFIG_SET_KEY, { key: 'selectedLightId', value });
 }

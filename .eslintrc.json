@@ -19,6 +19,7 @@
     }
   },
   "rules": {
+    "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "import/no-unresolved": "off",
     "react/prop-types": "off"

@@ -1,5 +1,4 @@
-import { ipcRenderer } from 'electron';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   Box,
   Button,
@@ -12,28 +11,19 @@ import {
   Textarea,
 } from '@chakra-ui/core';
 
-import { IPCEvents } from '../../enums/IPCEvents';
-
-import { Lifx } from '../../lifx';
+import { useAppConfig } from '../components/AppConfigProvider';
 
 interface ConfigProps {
   path: string;
 }
 
 const Config: React.FC<ConfigProps> = () => {
-  const [lightStates, setLightStates] = useState<Record<string, Lifx.LightState>>({});
+  const { getKey, setKey } = useAppConfig();
+
+  const lifxStates = getKey('lifxStates') ?? {};
 
   const [rewardId, setRewardId] = useState('');
   const [lightState, setLightState] = useState('');
-
-  useEffect(() => {
-    doAsync();
-
-    async function doAsync(): Promise<void> {
-      const states = await ipcRenderer.invoke(IPCEvents.CONFIG_GET_LIFX_STATES);
-      setLightStates(states);
-    }
-  }, []);
 
   return (
     <Box>
@@ -55,7 +45,7 @@ const Config: React.FC<ConfigProps> = () => {
         overflow="auto"
         pr={4}
       >
-        {Object.entries(lightStates).map(([key, value]) => (
+        {Object.entries(lifxStates).map(([key, value]) => (
           <Fragment key={key}>
             <Code bg="none">{key}</Code>
             <Code bg="none" whiteSpace="pre">
@@ -75,12 +65,13 @@ const Config: React.FC<ConfigProps> = () => {
               onClick={async (event): Promise<void> => {
                 event.preventDefault();
 
-                await ipcRenderer.invoke(IPCEvents.CONFIG_DELETE_LIFX_STATE, {
-                  rewardId: key,
-                });
+                const newStates = {
+                  ...lifxStates,
+                };
 
-                const states = await ipcRenderer.invoke(IPCEvents.CONFIG_GET_LIFX_STATES);
-                setLightStates(states);
+                delete newStates[key];
+
+                setKey('lifxStates', newStates);
               }}
             >
               Delete
@@ -122,13 +113,10 @@ const Config: React.FC<ConfigProps> = () => {
               return;
             }
 
-            await ipcRenderer.invoke(IPCEvents.CONFIG_SET_LIFX_STATE, {
-              rewardId,
-              state: JSON.parse(lightState),
+            setKey('lifxStates', {
+              ...lifxStates,
+              [rewardId]: JSON.parse(lightState),
             });
-
-            const states = await ipcRenderer.invoke(IPCEvents.CONFIG_GET_LIFX_STATES);
-            setLightStates(states);
 
             setRewardId('');
             setLightState('');

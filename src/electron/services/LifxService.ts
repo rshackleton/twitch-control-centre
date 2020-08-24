@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 
 import { Credentials } from '../../enums/Credentials';
-import { Lifx } from '../../lifx';
+import { Lifx } from '../../types/lifx';
 
 import CredentialsManager from '../CredentialsManager';
 
