@@ -1,10 +1,9 @@
 import { Box, Button, Grid, Heading } from '@chakra-ui/core';
 import React, { Fragment, useEffect, useState } from 'react';
 
-import { Lifx } from '../../types/lifx';
-
-import { useAppConfig } from '../components/AppConfigProvider';
-import LifxService from '../services/LifxService';
+import { useAppConfig } from '@components/AppConfigProvider';
+import LifxService from '@services/LifxService';
+import { Lifx } from '@src/types';
 
 const service = new LifxService();
 
@@ -13,9 +12,9 @@ interface LifxProps {
 }
 
 const Lifx: React.FC<LifxProps> = () => {
-  const { getKey, setKey } = useAppConfig();
+  const appConfigContext = useAppConfig();
 
-  const selectedLightId = getKey('selectedLightId') ?? '';
+  const selectedLightId = appConfigContext?.getKey('selectedLightId') ?? '';
 
   const [lights, setLights] = useState<Lifx.Light[]>([]);
 
@@ -51,7 +50,7 @@ const Lifx: React.FC<LifxProps> = () => {
       </Heading>
 
       <Grid alignItems="center" gap={2} gridTemplateColumns="max-content min-content min-content">
-        {lights.map((light) => {
+        {lights.map((light: Lifx.Light) => {
           const name = getLightName(light);
 
           return (
@@ -63,6 +62,10 @@ const Lifx: React.FC<LifxProps> = () => {
                   const lights = await service.getLights();
 
                   const currentLight = lights.find((l) => l.id === light.id);
+
+                  if (!currentLight) {
+                    return;
+                  }
 
                   const currentState = {
                     brightness: currentLight.brightness,
@@ -93,7 +96,7 @@ const Lifx: React.FC<LifxProps> = () => {
                 onClick={async (event): Promise<void> => {
                   event.preventDefault();
 
-                  setKey('selectedLightId', light.id);
+                  appConfigContext?.setKey('selectedLightId', light.id);
                 }}
               >
                 Select

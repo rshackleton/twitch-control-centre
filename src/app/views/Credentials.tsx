@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/core';
 import React from 'react';
 
-import CredentialsForm from '../components/CredentialsForm';
+import CredentialsForm from '@components/CredentialsForm';
 
 interface CredentialsProps {
   path: string;

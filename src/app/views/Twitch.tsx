@@ -1,7 +1,7 @@
 import { Box, FormControl, FormLabel, Heading, Switch, Textarea } from '@chakra-ui/core';
 import React from 'react';
 
-import { useTwitchContext } from '../components/TwitchProvider';
+import { useTwitchContext } from '@components/TwitchProvider';
 
 interface TwitchProps {
   path: string;
@@ -33,7 +33,7 @@ const Twitch: React.FC<TwitchProps> = () => {
 
         <Textarea
           isReadOnly
-          value={log.join('\r\n')}
+          value={log?.join('\r\n') ?? ''}
           fontFamily="mono"
           fontSize="xs"
           minHeight={300}

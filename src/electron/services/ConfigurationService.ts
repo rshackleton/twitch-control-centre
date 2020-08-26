@@ -17,7 +17,8 @@ export default class ConfigurationService {
     return this.store.store;
   }
 
-  set(value: AppConfig): void {
+  set(value: AppConfig): AppConfig {
     this.store.store = value;
+    return this.store.store;
   }
 }

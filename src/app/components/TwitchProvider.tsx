@@ -1,8 +1,8 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 
-import { TwitchRedemptionData } from '../../electron/ipc/TwitchHandler';
+import { TwitchRedemptionData } from '@src/electron/ipc/TwitchHandler';
 
-import TwitchService from '../services/TwitchService';
+import TwitchService from '@services/TwitchService';
 
 interface TwitchProviderProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ interface TwitchProviderProps {
 export interface TwitchContextValue {
   isEnabled: boolean;
   log: string[];
-  redemption: TwitchRedemptionData;
+  redemption?: TwitchRedemptionData;
   toggle: () => void;
 }
 
@@ -25,7 +25,7 @@ export function useTwitchContext(): TwitchContextValue | null {
 
 const TwitchProvider: React.FC<TwitchProviderProps> = ({ children }) => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const [redemption, setRedemption] = useState<TwitchRedemptionData>(null);
+  const [redemption, setRedemption] = useState<TwitchRedemptionData>();
   const [log, setLog] = useState<string[]>([]);
 
   useEffect(() => {
@@ -51,8 +51,6 @@ const TwitchProvider: React.FC<TwitchProviderProps> = ({ children }) => {
         log,
         redemption,
         toggle: async (): Promise<void> => {
-          event.preventDefault();
-
           if (isEnabled) {
             await service.stop(onChannelPointRedemption);
           } else {

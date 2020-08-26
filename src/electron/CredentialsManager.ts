@@ -3,7 +3,7 @@ import keytar from 'keytar';
 const SERVICE_NAME = 'rs.twitchcc';
 
 class CredentialsManager {
-  async getPassword(account: string): Promise<string> {
+  async getPassword(account: string): Promise<string | null> {
     return keytar.getPassword(SERVICE_NAME, account);
   }
 

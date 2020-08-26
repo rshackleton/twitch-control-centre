@@ -11,16 +11,16 @@ import {
   Textarea,
 } from '@chakra-ui/core';
 
-import { useAppConfig } from '../components/AppConfigProvider';
+import { useAppConfig } from '@components/AppConfigProvider';
 
 interface ConfigProps {
   path: string;
 }
 
 const Config: React.FC<ConfigProps> = () => {
-  const { getKey, setKey } = useAppConfig();
+  const appConfigContext = useAppConfig();
 
-  const lifxStates = getKey('lifxStates') ?? {};
+  const lifxStates = appConfigContext?.getKey('lifxStates') ?? {};
 
   const [rewardId, setRewardId] = useState('');
   const [lightState, setLightState] = useState('');
@@ -71,7 +71,7 @@ const Config: React.FC<ConfigProps> = () => {
 
                 delete newStates[key];
 
-                setKey('lifxStates', newStates);
+                appConfigContext?.setKey('lifxStates', newStates);
               }}
             >
               Delete
@@ -113,7 +113,7 @@ const Config: React.FC<ConfigProps> = () => {
               return;
             }
 
-            setKey('lifxStates', {
+            appConfigContext?.setKey('lifxStates', {
               ...lifxStates,
               [rewardId]: JSON.parse(lightState),
             });

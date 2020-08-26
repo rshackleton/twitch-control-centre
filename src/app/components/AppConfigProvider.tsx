@@ -1,26 +1,12 @@
-import { ipcRenderer } from 'electron';
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { IPCEvents } from '../../enums/IPCEvents';
-import { AppConfig } from '../../types/app';
+import * as actions from '@redux/actions';
+import { RootState } from '@redux/reducers';
+import { useAppDispatch } from '@redux/store';
+import { AppConfig } from '@src/types';
 
-interface AppConfigContextValue {
-  /**
-   * Get the configuration value.
-   * @param key The configuration key
-   */
-  getKey<Key extends keyof AppConfig>(key: Key): AppConfig[Key];
-
-  /**
-   * Set the configuration value.
-   * @param key The configuration key
-   */
-  setKey<Key extends keyof AppConfig>(key: Key, value?: AppConfig[Key]): void;
-}
-
-interface AppConfigProviderProps {
-  children: ReactNode;
-}
+import { AppConfigContextValue, AppConfigProviderProps } from './AppConfigProvider.types';
 
 /**
  * Application config context.
@@ -36,22 +22,14 @@ export const useAppConfig = (): AppConfigContextValue | null => useContext(AppCo
  * AppConfig context provider.
  */
 const AppConfigProvider: React.FC<AppConfigProviderProps> = ({ children }) => {
-  const [config, setConfig] = useState<AppConfig>();
+  const config = useSelector<RootState, AppConfig>((state) => state.appConfig);
 
+  const dispatch = useAppDispatch();
+
+  // Initialise store on mount.
   useEffect(() => {
-    doAsync();
-
-    async function doAsync(): Promise<void> {
-      if (!config) {
-        // First mount, load existing config.
-        const initialConfig = await ipcRenderer.invoke(IPCEvents.CONFIG_GET);
-        setConfig(initialConfig);
-      } else {
-        // Subsequent updates, set config.
-        await ipcRenderer.invoke(IPCEvents.CONFIG_SET, config);
-      }
-    }
-  }, [config]);
+    dispatch(actions.appConfig.init());
+  }, []);
 
   // Wait for config to be available before rendering app.
   if (!config) {
@@ -67,7 +45,7 @@ const AppConfigProvider: React.FC<AppConfigProviderProps> = ({ children }) => {
   }
 
   function setKey<Key extends keyof AppConfig>(key: Key, value?: AppConfig[Key]): void {
-    setConfig({ ...config, [key]: value });
+    dispatch(actions.appConfig.setKey({ key: key, value: value }));
   }
 };
 

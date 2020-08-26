@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
-import { IPCEvents } from '../enums/IPCEvents';
 
-import { Credentials } from '../enums/Credentials';
+import { IPCEvents } from '@src/enums/IPCEvents';
+import { Credentials } from '@src/enums/Credentials';
 
 class CredentialsManager {
   getLifxKey(): Promise<string> {

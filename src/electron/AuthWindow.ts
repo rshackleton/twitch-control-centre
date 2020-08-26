@@ -23,7 +23,7 @@ interface TwitchApiTokenResponse {
 class AuthWindow {
   private parentWindow: BrowserWindow;
   private url: string;
-  private window: BrowserWindow;
+  private window?: BrowserWindow;
 
   constructor(parentWindow: BrowserWindow) {
     this.parentWindow = parentWindow;
@@ -48,7 +48,7 @@ class AuthWindow {
       this.window.loadURL(this.url);
 
       this.window.once('ready-to-show', () => {
-        this.window.show();
+        this.window?.show();
       });
 
       const {
@@ -85,12 +85,12 @@ class AuthWindow {
         } catch (error) {
           reject(error);
         } finally {
-          this.window.close();
+          this.window?.close();
         }
       });
 
       this.window.on('closed', () => {
-        this.window = null;
+        this.window = undefined;
       });
     });
   }

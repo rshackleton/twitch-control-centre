@@ -11,10 +11,10 @@ import CredentialsManager from './CredentialsManager';
 const { twitchAppClientId, twitchAppClientSecret } = envVariables;
 
 class TwitchApiClient {
-  private apiClient: ApiClient;
+  private apiClient?: ApiClient;
   private credentials: CredentialsManager;
-  private pubSubClient: PubSubClient;
-  private userInfo: HelixUser;
+  private pubSubClient?: PubSubClient;
+  private userInfo?: HelixUser;
 
   constructor() {
     this.credentials = new CredentialsManager();
@@ -33,8 +33,8 @@ class TwitchApiClient {
     const clientSecret = twitchAppClientSecret;
 
     // Managed using OAuth flow.
-    const accessToken = await this.credentials.getPassword('twitch-access-token');
-    const refreshToken = await this.credentials.getPassword('twitch-refresh-token');
+    const accessToken = (await this.credentials.getPassword('twitch-access-token')) ?? '';
+    const refreshToken = (await this.credentials.getPassword('twitch-refresh-token')) ?? '';
 
     // Create API client.
     this.apiClient = new ApiClient({
@@ -62,7 +62,11 @@ class TwitchApiClient {
   redemption(callback: (message: PubSubRedemptionMessage) => void): Promise<PubSubListener> {
     console.log('TwitchApiClient.redemption: Called');
 
-    return this.pubSubClient.onRedemption(this.userInfo, callback);
+    if (this.pubSubClient && this.userInfo) {
+      return this.pubSubClient.onRedemption(this.userInfo, callback);
+    }
+
+    return Promise.reject();
   }
 }
 

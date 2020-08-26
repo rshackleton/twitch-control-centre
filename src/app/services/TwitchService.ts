@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 
-import { IPCEvents } from '../../enums/IPCEvents';
+import { IPCEvents } from '@src/enums/IPCEvents';
 
 type IpcCallback = (event: Electron.IpcRendererEvent, ...args: any[]) => void;
 

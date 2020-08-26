@@ -1,3 +1,5 @@
+const path = require('path');
+
 const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
 
@@ -27,6 +29,15 @@ module.exports = {
   },
   plugins: plugins,
   resolve: {
+    alias: {
+      '@src': path.resolve(__dirname, 'src'),
+
+      '@components': path.resolve(__dirname, 'src/app/components'),
+      '@config': path.resolve(__dirname, 'src/app/config'),
+      '@redux': path.resolve(__dirname, 'src/app/redux'),
+      '@services': path.resolve(__dirname, 'src/app/services'),
+      '@views': path.resolve(__dirname, 'src/app/views'),
+    },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
 };

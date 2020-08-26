@@ -1,4 +1,8 @@
 import { app, BrowserWindow } from 'electron';
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS,
+} from 'electron-devtools-installer';
 
 import AuthHandler from './electron/ipc/AuthHandler';
 import ConfigHandler from './electron/ipc/ConfigHandler';
@@ -14,7 +18,7 @@ const credentialsHandler = new CredentialsHandler();
 const lifxHandler = new LifxHandler();
 const twitchHandler = new TwitchHandler();
 
-const mainWindow = new MainWindow();
+let mainWindow: MainWindow;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -25,13 +29,15 @@ if (require('electron-squirrel-startup')) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  await mainWindow.showWindow();
+  mainWindow = new MainWindow();
 
   authHandler.register(mainWindow.window);
   configHandler.register();
   credentialsHandler.register();
   lifxHandler.register();
   twitchHandler.register(mainWindow.window);
+
+  await mainWindow.showWindow();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -49,4 +55,10 @@ app.on('activate', async () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     await mainWindow.showWindow();
   }
+});
+
+app.whenReady().then(() => {
+  installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS])
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 });

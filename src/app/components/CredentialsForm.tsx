@@ -2,9 +2,8 @@ import { Box, Button, Divider, FormLabel, Grid, Heading, Input } from '@chakra-u
 import { ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
 
-import CredentialsManager from '../CredentialsManager';
-
-import { IPCEvents } from '../../enums/IPCEvents';
+import CredentialsManager from '@src/app/CredentialsManager';
+import { IPCEvents } from '@src/enums/IPCEvents';
 
 const credentials = new CredentialsManager();
 
