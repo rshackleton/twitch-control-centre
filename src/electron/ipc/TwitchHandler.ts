@@ -40,7 +40,9 @@ export default class TwitchHandler {
       console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Initialised client`);
 
       if (!this.subscription) {
+        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: No subscription found.`);
         this.subscription = await client.redemption(this.listener.bind(this));
+        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: New subscription created.`);
       }
     });
 
@@ -48,8 +50,10 @@ export default class TwitchHandler {
       console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_STOP}: Called`);
 
       if (this.subscription) {
+        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Subscription found.`);
         this.subscription.remove();
         this.subscription = null;
+        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Subscription removed.`);
       }
     });
   }

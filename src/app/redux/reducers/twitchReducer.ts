@@ -2,6 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import * as actions from '@redux/actions';
 import { TwitchRedemptionData } from '@src/electron/ipc/TwitchHandler';
+import { channelEvent } from '@redux/middleware/ipcMiddleware';
 
 export interface TwitchState {
   isEnabled: boolean;
@@ -17,18 +18,17 @@ const initialState: TwitchState = {
 
 const twitchReducer = createReducer<TwitchState>(initialState, (builder) => {
   builder
-    .addCase(actions.twitch.redemption, (state, action) => {
-      state.log.unshift(toLog(action.payload));
-      state.redemption = action.payload;
-    })
-    .addCase(actions.twitch.start, (state) => {
+    .addCase(actions.twitch.start.fulfilled, (state) => {
       state.isEnabled = true;
     })
-    .addCase(actions.twitch.stop, (state) => {
+    .addCase(actions.twitch.stop.fulfilled, (state) => {
       state.isEnabled = false;
     })
-    .addCase(actions.twitch.toggle, (state, action) => {
-      state.isEnabled = action.payload;
+    .addCase(channelEvent, (state, action) => {
+      const redemption = action.payload.args[0] as TwitchRedemptionData;
+
+      state.log.unshift(toLog(redemption));
+      state.redemption = redemption;
     });
 });
 

@@ -33,7 +33,11 @@ const Twitch: React.FC<TwitchProps> = () => {
           <Switch
             isChecked={isEnabled}
             onChange={(): void => {
-              dispatch(actions.twitch.toggle(!isEnabled));
+              if (isEnabled) {
+                dispatch(actions.twitch.stop());
+              } else {
+                dispatch(actions.twitch.start());
+              }
             }}
           />
         </FormControl>

@@ -59,14 +59,21 @@ class TwitchApiClient {
   }
 
   /** Register a listener to channel point redemption topic. */
-  redemption(callback: (message: PubSubRedemptionMessage) => void): Promise<PubSubListener> {
+  async redemption(callback: (message: PubSubRedemptionMessage) => void): Promise<PubSubListener> {
     console.log('TwitchApiClient.redemption: Called');
 
-    if (this.pubSubClient && this.userInfo) {
-      return this.pubSubClient.onRedemption(this.userInfo, callback);
+    if (!this.pubSubClient) {
+      return Promise.reject();
     }
 
-    return Promise.reject();
+    if (!this.userInfo) {
+      return Promise.reject();
+    }
+
+    console.log('TwitchApiClient.redemption: Creating subscription');
+    const sub = await this.pubSubClient.onRedemption(this.userInfo, callback);
+    console.log('TwitchApiClient.redemption: Created subscription');
+    return sub;
   }
 }
 
