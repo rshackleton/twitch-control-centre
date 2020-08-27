@@ -1,14 +1,20 @@
 import { Box, FormControl, FormLabel, Heading, Switch, Textarea } from '@chakra-ui/core';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import { useTwitchContext } from '@components/TwitchProvider';
+import * as actions from '@redux/actions';
+import { RootState } from '@redux/reducers';
+import { TwitchState } from '@redux/reducers/twitchReducer';
+import { useAppDispatch } from '@redux/store';
 
 interface TwitchProps {
   path: string;
 }
 
 const Twitch: React.FC<TwitchProps> = () => {
-  const { isEnabled, log, toggle } = useTwitchContext() ?? {};
+  const { isEnabled, log } = useSelector<RootState, TwitchState>((state) => state.twitch);
+
+  const dispatch = useAppDispatch();
 
   return (
     <Box>
@@ -24,7 +30,12 @@ const Twitch: React.FC<TwitchProps> = () => {
           mb={4}
         >
           <FormLabel>Enabled: </FormLabel>
-          <Switch isChecked={isEnabled} onChange={toggle} />
+          <Switch
+            isChecked={isEnabled}
+            onChange={(): void => {
+              dispatch(actions.twitch.toggle(!isEnabled));
+            }}
+          />
         </FormControl>
 
         <Heading size="xs" mb={4}>

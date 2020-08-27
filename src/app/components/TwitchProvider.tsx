@@ -1,76 +1,44 @@
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { TwitchRedemptionData } from '@src/electron/ipc/TwitchHandler';
-
+import * as actions from '@redux/actions';
+import { RootState } from '@redux/reducers';
+import { TwitchState } from '@redux/reducers/twitchReducer';
+import { useAppDispatch } from '@redux/store';
 import TwitchService from '@services/TwitchService';
+import { TwitchRedemptionData } from '@src/electron/ipc/TwitchHandler';
 
 interface TwitchProviderProps {
   children: ReactNode;
 }
 
-export interface TwitchContextValue {
-  isEnabled: boolean;
-  log: string[];
-  redemption?: TwitchRedemptionData;
-  toggle: () => void;
-}
-
-const TwitchContext = React.createContext<TwitchContextValue | null>(null);
-
 const service = new TwitchService();
 
-export function useTwitchContext(): TwitchContextValue | null {
-  return useContext(TwitchContext);
-}
-
 const TwitchProvider: React.FC<TwitchProviderProps> = ({ children }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [redemption, setRedemption] = useState<TwitchRedemptionData>();
-  const [log, setLog] = useState<string[]>([]);
+  const { isEnabled } = useSelector<RootState, TwitchState>((state) => state.twitch);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (isEnabled) {
+      service.start(onChannelPointRedemption);
+    } else {
+      service.stop(onChannelPointRedemption);
+    }
+
     return (): void => {
       service.stop(onChannelPointRedemption);
     };
-  }, []);
+  }, [isEnabled]);
 
-  useEffect(() => {
-    if (!redemption) {
-      return;
-    }
-
-    const ts = new Date().toISOString();
-    const newLine = `${ts}: ${redemption.id} : ${redemption.rewardName} - Redeemed by ${redemption.userId} : ${redemption.userDisplayName}`;
-    setLog([newLine, ...log]);
-  }, [redemption]);
-
-  return (
-    <TwitchContext.Provider
-      value={{
-        isEnabled,
-        log,
-        redemption,
-        toggle: async (): Promise<void> => {
-          if (isEnabled) {
-            await service.stop(onChannelPointRedemption);
-          } else {
-            await service.start(onChannelPointRedemption);
-          }
-
-          setIsEnabled(!isEnabled);
-        },
-      }}
-    >
-      {children}
-    </TwitchContext.Provider>
-  );
+  return <>{children}</>;
 
   function onChannelPointRedemption(
     _: Electron.IpcRendererEvent,
     data: TwitchRedemptionData,
   ): void {
     console.log('Redemption:', data);
-    setRedemption(data);
+    dispatch(actions.twitch.redemption(data));
   }
 };
 
