@@ -1,4 +1,4 @@
-export enum IPCEvents {
+export enum IpcChannels {
   CONFIG_GET = 'CONFIG_GET',
   CONFIG_SET = 'CONFIG_SET',
 

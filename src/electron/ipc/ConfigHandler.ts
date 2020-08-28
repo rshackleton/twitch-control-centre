@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 
-import { IPCEvents } from '../../enums/IPCEvents';
+import { IpcChannels } from '../../enums/IpcChannels';
 
 import ConfigurationService from '../services/ConfigurationService';
 
@@ -12,11 +12,11 @@ class ConfigHandler {
   }
 
   register(): void {
-    ipcMain.handle(IPCEvents.CONFIG_GET, async () => {
+    ipcMain.handle(IpcChannels.CONFIG_GET, async () => {
       return this.config.get();
     });
 
-    ipcMain.handle(IPCEvents.CONFIG_SET, async (_, value) => {
+    ipcMain.handle(IpcChannels.CONFIG_SET, async (_, value) => {
       return this.config.set(value);
     });
   }

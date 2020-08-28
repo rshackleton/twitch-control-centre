@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 
 import { LifxHandlerArgs } from '@src/electron/ipc/LifxHandler';
-import { IPCEvents } from '@src/enums/IPCEvents';
+import { IpcChannels } from '@src/enums/IpcChannels';
 import { Lifx } from '@src/types';
 
 export default class LifxService {
@@ -11,7 +11,7 @@ export default class LifxService {
       url: 'https://api.lifx.com/v1/lights/all',
     };
 
-    const result = await ipcRenderer.invoke(IPCEvents.LIFX_CALL_API, args);
+    const result = await ipcRenderer.invoke(IpcChannels.LIFX_CALL_API, args);
 
     return result;
   }
@@ -23,7 +23,7 @@ export default class LifxService {
       url: `https://api.lifx.com/v1/lights/${selector}/state`,
     };
 
-    const result = await ipcRenderer.invoke(IPCEvents.LIFX_CALL_API, args);
+    const result = await ipcRenderer.invoke(IpcChannels.LIFX_CALL_API, args);
 
     return result;
   }

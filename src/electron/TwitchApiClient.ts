@@ -4,7 +4,7 @@ import { PubSubClient, PubSubRedemptionMessage, PubSubListener } from 'twitch-pu
 
 import envVariables from '../../env-variables.json';
 
-import { Credentials } from '../enums/Credentials';
+import { CredentialKey } from '../enums/Credentials';
 
 import CredentialsManager from './CredentialsManager';
 
@@ -42,8 +42,11 @@ class TwitchApiClient {
         clientSecret,
         refreshToken,
         onRefresh: async (token): Promise<void> => {
-          await this.credentials.setPassword(Credentials.TWITCH_ACCESS_TOKEN, token.accessToken);
-          await this.credentials.setPassword(Credentials.TWITCH_REFRESH_TOKEN, token.refreshToken);
+          await this.credentials.setPassword(CredentialKey.TWITCH_ACCESS_TOKEN, token.accessToken);
+          await this.credentials.setPassword(
+            CredentialKey.TWITCH_REFRESH_TOKEN,
+            token.refreshToken,
+          );
         },
       }),
     });

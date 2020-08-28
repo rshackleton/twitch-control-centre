@@ -1,7 +1,7 @@
 import { Method } from 'axios';
 import { ipcMain } from 'electron';
 
-import { IPCEvents } from '../../enums/IPCEvents';
+import { IpcChannels } from '../../enums/IpcChannels';
 
 import LifxService from '../services/LifxService';
 
@@ -19,7 +19,7 @@ class LifxHandler {
   }
 
   register(): void {
-    ipcMain.handle(IPCEvents.LIFX_CALL_API, async (_, args: LifxHandlerArgs) => {
+    ipcMain.handle(IpcChannels.LIFX_CALL_API, async (_, args: LifxHandlerArgs) => {
       return this.service.call(args);
     });
   }

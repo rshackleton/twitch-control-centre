@@ -1,7 +1,7 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { PubSubRedemptionMessage, PubSubListener, PubSubMessage } from 'twitch-pubsub-client/lib';
 
-import { IPCEvents } from '../../enums/IPCEvents';
+import { IpcChannels } from '../../enums/IpcChannels';
 
 import ConfigurationService from '../services/ConfigurationService';
 import LifxService from '../services/LifxService';
@@ -32,28 +32,28 @@ export default class TwitchHandler {
   async register(window: BrowserWindow): Promise<void> {
     this.window = window;
 
-    ipcMain.handle(IPCEvents.TWITCH_PUBSUB_START, async () => {
-      console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Called`);
+    ipcMain.handle(IpcChannels.TWITCH_PUBSUB_START, async () => {
+      console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_START}: Called`);
 
       await client.initialise();
 
-      console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Initialised client`);
+      console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_START}: Initialised client`);
 
       if (!this.subscription) {
-        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: No subscription found.`);
+        console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_START}: No subscription found.`);
         this.subscription = await client.redemption(this.listener.bind(this));
-        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: New subscription created.`);
+        console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_START}: New subscription created.`);
       }
     });
 
-    ipcMain.handle(IPCEvents.TWITCH_PUBSUB_STOP, () => {
-      console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_STOP}: Called`);
+    ipcMain.handle(IpcChannels.TWITCH_PUBSUB_STOP, () => {
+      console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_STOP}: Called`);
 
       if (this.subscription) {
-        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Subscription found.`);
+        console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_START}: Subscription found.`);
         this.subscription.remove();
         this.subscription = null;
-        console.log(`TwitchHandler: ${IPCEvents.TWITCH_PUBSUB_START}: Subscription removed.`);
+        console.log(`TwitchHandler: ${IpcChannels.TWITCH_PUBSUB_START}: Subscription removed.`);
       }
     });
   }
@@ -73,7 +73,7 @@ export default class TwitchHandler {
         userName: message.userName,
       };
 
-      webContents.send(IPCEvents.TWITCH_PUBSUB_EVENT, data);
+      webContents.send(IpcChannels.TWITCH_PUBSUB_EVENT, data);
     }
 
     // Trigger appropriate LIFX change.

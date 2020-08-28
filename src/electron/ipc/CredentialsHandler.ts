@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 
-import { IPCEvents } from '../../enums/IPCEvents';
+import { IpcChannels } from '../../enums/IpcChannels';
 
 import CredentialsManager from '../CredentialsManager';
 
@@ -13,13 +13,13 @@ class CredentialsHandler {
 
   register(): void {
     // Add listener to allow retrievable of credentials.
-    ipcMain.handle(IPCEvents.CREDENTIALS_GET, async (_, args) => {
-      return this.credentials.getPassword(args.account);
+    ipcMain.handle(IpcChannels.CREDENTIALS_GET, async () => {
+      return this.credentials.getAll();
     });
 
     // Add listener to allow updating of credentials.
-    ipcMain.handle(IPCEvents.CREDENTIALS_SET, async (_, args) => {
-      await this.credentials.setPassword(args.account, args.value);
+    ipcMain.handle(IpcChannels.CREDENTIALS_SET, async (_, account, value) => {
+      await this.credentials.setPassword(account, value);
     });
   }
 }

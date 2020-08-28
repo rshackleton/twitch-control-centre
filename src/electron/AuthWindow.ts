@@ -4,7 +4,7 @@ import url from 'url';
 
 import envVariables from '../../env-variables.json';
 
-import { Credentials } from '../enums/Credentials';
+import { CredentialKey } from '../enums/Credentials';
 
 import CredentialsManager from './CredentialsManager';
 
@@ -77,8 +77,8 @@ class AuthWindow {
           const refreshToken = response.data.refresh_token;
 
           if (refreshToken) {
-            await credentials.setPassword(Credentials.TWITCH_ACCESS_TOKEN, accessToken);
-            await credentials.setPassword(Credentials.TWITCH_REFRESH_TOKEN, refreshToken);
+            await credentials.setPassword(CredentialKey.TWITCH_ACCESS_TOKEN, accessToken);
+            await credentials.setPassword(CredentialKey.TWITCH_REFRESH_TOKEN, refreshToken);
           }
 
           resolve();

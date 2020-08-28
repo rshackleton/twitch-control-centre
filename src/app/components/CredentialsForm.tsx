@@ -1,30 +1,22 @@
 import { Box, Button, Divider, FormLabel, Grid, Heading, Input } from '@chakra-ui/core';
-import { ipcRenderer } from 'electron';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import CredentialsManager from '@src/app/CredentialsManager';
-import { IPCEvents } from '@src/enums/IPCEvents';
+import { useAppDispatch } from '@redux/store';
+import { invoke } from '@redux/middleware/ipcMiddleware';
+import { CredentialKey } from '@src/enums/Credentials';
+import { IpcChannels } from '@src/enums/IpcChannels';
 
-const credentials = new CredentialsManager();
+import { useCredentials } from './CredentialsProvider';
 
 const CredentialsForm: React.FC = () => {
-  useEffect(() => {
-    getLifxKey();
-    getTwitchPubSubKey();
+  const dispatch = useAppDispatch();
 
-    async function getLifxKey(): Promise<void> {
-      const value = await credentials.getLifxKey();
-      setLifxKey(value ?? '');
-    }
+  const credentialsContext = useCredentials();
 
-    async function getTwitchPubSubKey(): Promise<void> {
-      const value = await credentials.getTwitchPubSubKey();
-      setIsTwitchAuthenticated(!!value);
-    }
-  }, []);
+  const lifxKey = credentialsContext?.getKey(CredentialKey.LIFX_KEY) ?? '';
+  const twitchAccessToken = credentialsContext?.getKey(CredentialKey.TWITCH_ACCESS_TOKEN) ?? '';
 
-  const [lifxKey, setLifxKey] = useState<string>('');
-  const [isTwitchAuthenticated, setIsTwitchAuthenticated] = useState<boolean>(false);
+  const [formLifxKey, setFormLifxKey] = useState<string>(lifxKey ?? '');
 
   return (
     <Box>
@@ -33,13 +25,13 @@ const CredentialsForm: React.FC = () => {
       </Heading>
       <Grid gap="20px" templateColumns="200px 1fr" alignItems="center" mb={6}>
         <Box gridColumn="span 2">
-          {isTwitchAuthenticated ? (
+          {twitchAccessToken ? (
             <Button
               onClick={async (event): Promise<void> => {
                 event.preventDefault();
 
-                await ipcRenderer.invoke(IPCEvents.TWITCH_AUTH_CLEAR);
-                setIsTwitchAuthenticated(false);
+                await credentialsContext?.setKey(CredentialKey.TWITCH_ACCESS_TOKEN, '');
+                await credentialsContext?.setKey(CredentialKey.TWITCH_REFRESH_TOKEN, '');
               }}
             >
               Clear Credentials
@@ -49,8 +41,7 @@ const CredentialsForm: React.FC = () => {
               onClick={async (event): Promise<void> => {
                 event.preventDefault();
 
-                const result = await ipcRenderer.invoke(IPCEvents.TWITCH_AUTH_START);
-                setIsTwitchAuthenticated(result);
+                await dispatch(invoke({ channel: IpcChannels.TWITCH_AUTH_START }));
               }}
             >
               Authenticate
@@ -69,9 +60,9 @@ const CredentialsForm: React.FC = () => {
         <Input
           id="lifx-key"
           type="password"
-          value={lifxKey}
+          value={formLifxKey}
           onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
-            setLifxKey(event.target.value);
+            setFormLifxKey(event.target.value);
           }}
         />
         <Box gridColumn="span 2">
@@ -79,9 +70,7 @@ const CredentialsForm: React.FC = () => {
             onClick={async (event): Promise<void> => {
               event.preventDefault();
 
-              await credentials.setLifxKey(lifxKey);
-
-              console.log('Credentials saved');
+              await credentialsContext?.setKey(CredentialKey.LIFX_KEY, formLifxKey);
             }}
           >
             Save

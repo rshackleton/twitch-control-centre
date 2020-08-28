@@ -8,7 +8,7 @@ import {
 import { ipcRenderer } from 'electron';
 
 import { RootState } from '@redux/reducers';
-import { IPCEvents } from '@src/enums/IPCEvents';
+import { IpcChannels } from '@src/enums/IpcChannels';
 
 /**
  * The IPC configuration key.
@@ -25,7 +25,7 @@ export type IpcAction = PayloadAction<IpcActionPayload>;
  */
 export interface IpcActionPayload {
   [IpcKey]: {
-    channel: IPCEvents;
+    channel: IpcChannels;
   };
 }
 
@@ -47,6 +47,11 @@ export type IpcMiddlewareType = Middleware<{}, RootState>;
 type IpcListener = (event: Electron.IpcRendererEvent, ...args: unknown[]) => void;
 
 /**
+ *
+ */
+export type InvokeParameter = { channel: IpcChannels; args?: unknown[] };
+
+/**
  * Register an Ipc channel listener.
  */
 export const on = createAction<IpcActionPayload, 'IPC/ON'>('IPC/ON');
@@ -64,15 +69,18 @@ export const channelEvent = createAction<IpcEventPayload, 'IPC/EVENT'>('IPC/EVEN
 /**
  * Remove an Ipc channel listener.
  */
-export const invoke = createAsyncThunk<unknown, IPCEvents>('IPC/INVOKE', async (channel) => {
-  const returnValue = (await ipcRenderer.invoke(channel)) as unknown;
-  return returnValue;
-});
+export const invoke = createAsyncThunk<unknown, InvokeParameter>(
+  'IPC/INVOKE',
+  async ({ channel, args }) => {
+    const returnValue = (await ipcRenderer.invoke(channel, ...(args ?? []))) as unknown;
+    return returnValue;
+  },
+);
 
 /**
  * A map of channels and listeners.
  */
-const ipcListeners: Partial<Record<IPCEvents, IpcListener>> = {};
+const ipcListeners: Partial<Record<IpcChannels, IpcListener>> = {};
 
 /**
  * A middleware to handle IpcRenderer communication.

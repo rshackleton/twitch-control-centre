@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 
-import { Credentials } from '../../enums/Credentials';
+import { CredentialKey } from '../../enums/Credentials';
 import { Lifx } from '../../types/lifx';
 
 import CredentialsManager from '../CredentialsManager';
@@ -37,7 +37,7 @@ export default class LifxService {
   }
 
   async call<TData, TResponse>(args: CallArgs<TData>): Promise<TResponse | Lifx.ErrorResponse> {
-    const key = await this.credentials.getPassword(Credentials.LIFX_KEY);
+    const key = await this.credentials.getPassword(CredentialKey.LIFX_KEY);
 
     const options: AxiosRequestConfig = {
       headers: {
