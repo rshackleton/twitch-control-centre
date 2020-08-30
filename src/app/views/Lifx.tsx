@@ -1,11 +1,14 @@
 import { Box, Button, Grid, Heading } from '@chakra-ui/core';
-import React, { Fragment, useEffect, useState } from 'react';
+import { unwrapResult } from '@reduxjs/toolkit';
+import React, { Fragment, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useAppConfig } from '@components/AppConfigProvider';
-import LifxService from '@services/LifxService';
 import { Lifx } from '@src/types';
-
-const service = new LifxService();
+import * as actions from '@redux/actions';
+import { RootState } from '@redux/reducers';
+import { getLightName } from '@redux/reducers/lifxReducer';
+import { useAppDispatch } from '@redux/store';
 
 interface LifxProps {
   path: string;
@@ -16,30 +19,15 @@ const Lifx: React.FC<LifxProps> = () => {
 
   const selectedLightId = appConfigContext?.getKey('selectedLightId') ?? '';
 
-  const [lights, setLights] = useState<Lifx.Light[]>([]);
+  const lights = useSelector<RootState, Lifx.Light[]>((state) => state.lifx.lights);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     doAsync();
 
     async function doAsync(): Promise<void> {
-      const lights = await service.getLights();
-
-      setLights(
-        lights.sort((a, b) => {
-          const aName = getLightName(a);
-          const bName = getLightName(b);
-
-          if (aName > bName) {
-            return 1;
-          }
-
-          if (bName > aName) {
-            return -1;
-          }
-
-          return 0;
-        }),
-      );
+      await dispatch(actions.lifx.getLights());
     }
   }, []);
 
@@ -59,7 +47,11 @@ const Lifx: React.FC<LifxProps> = () => {
 
               <Button
                 onClick={async (): Promise<void> => {
-                  const lights = await service.getLights();
+                  // Refresh lights data.
+                  const results = await dispatch(actions.lifx.getLights());
+
+                  // Use directly returned data now.
+                  const lights = unwrapResult(results);
 
                   const currentLight = lights.find((l) => l.id === light.id);
 
@@ -73,18 +65,28 @@ const Lifx: React.FC<LifxProps> = () => {
                     power: currentLight.power,
                   };
 
-                  await service.setLightState(`id:${light.id}`, {
-                    brightness: 1.0,
-                    color: '#ff0000',
-                    duration: 1.0,
-                    power: 'on',
-                  });
+                  await dispatch(
+                    actions.lifx.setLightState({
+                      selector: `id:${light.id}`,
+                      lightState: {
+                        brightness: 1.0,
+                        color: '#ff0000',
+                        duration: 1.0,
+                        power: 'on',
+                      },
+                    }),
+                  );
 
                   setTimeout(async () => {
-                    await service.setLightState(`id:${light.id}`, {
-                      ...currentState,
-                      duration: 1.0,
-                    });
+                    await dispatch(
+                      actions.lifx.setLightState({
+                        selector: `id:${light.id}`,
+                        lightState: {
+                          ...currentState,
+                          duration: 1.0,
+                        },
+                      }),
+                    );
                   }, 2000);
                 }}
               >
@@ -110,8 +112,3 @@ const Lifx: React.FC<LifxProps> = () => {
 };
 
 export default Lifx;
-
-function getLightName(light: Lifx.Light): string {
-  const name = `${light.label.trim()} (${light.group?.name.trim()})`;
-  return name;
-}
