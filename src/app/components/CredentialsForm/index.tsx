@@ -6,7 +6,7 @@ import { invoke } from '@redux/middleware/ipcMiddleware';
 import { CredentialKey } from '@src/enums/Credentials';
 import { IpcChannels } from '@src/enums/IpcChannels';
 
-import { useCredentials } from './CredentialsProvider';
+import { useCredentials } from '../CredentialsProvider';
 
 const CredentialsForm: React.FC = () => {
   const dispatch = useAppDispatch();
