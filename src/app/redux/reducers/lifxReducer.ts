@@ -1,10 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import * as actions from '@redux/actions';
-import { Lifx } from '@src/types';
+import { Light } from '@src/types';
 
 type LifxState = {
-  lights: Lifx.Light[];
+  lights: Light[];
 };
 
 const initialState = { lights: [] };
@@ -49,7 +49,7 @@ const lifxReducer = createReducer<LifxState>(initialState, (builder) => {
 
 export default lifxReducer;
 
-export function getLightName(light: Lifx.Light): string {
+export function getLightName(light: Light): string {
   const name = `${light.label.trim()} (${light.group?.name.trim()})`;
   return name;
 }

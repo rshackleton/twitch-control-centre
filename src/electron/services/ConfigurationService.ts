@@ -7,7 +7,7 @@ export default class ConfigurationService {
 
   constructor() {
     this.store = new Store<AppConfig>({
-      name: 'lifx',
+      name: 'appConfig',
     });
 
     console.log('Config located at: ', this.store.path);

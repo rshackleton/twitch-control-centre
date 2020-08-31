@@ -44,7 +44,7 @@ const AppConfigProvider: React.FC<AppConfigProviderProps> = ({ children }) => {
     return config[key];
   }
 
-  function setKey<Key extends keyof AppConfig>(key: Key, value?: AppConfig[Key]): void {
+  function setKey<Key extends keyof AppConfig>(key: Key, value: AppConfig[Key]): void {
     dispatch(actions.appConfig.setKey({ key: key, value: value }));
   }
 };

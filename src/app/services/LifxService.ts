@@ -2,10 +2,10 @@ import { ipcRenderer } from 'electron';
 
 import { LifxHandlerArgs } from '@src/electron/ipc/LifxHandler';
 import { IpcChannels } from '@src/enums/IpcChannels';
-import { Lifx } from '@src/types';
+import { Light } from '@src/types';
 
 export default class LifxService {
-  async getLights(): Promise<Lifx.Light[]> {
+  async getLights(): Promise<Light[]> {
     const args: LifxHandlerArgs = {
       method: 'GET',
       url: 'https://api.lifx.com/v1/lights/all',

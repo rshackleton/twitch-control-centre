@@ -1,9 +1,8 @@
 import { Box, Heading } from '@chakra-ui/core';
+import { RouteComponentProps } from '@reach/router';
 import React from 'react';
 
-interface HomeProps {
-  path: string;
-}
+interface HomeProps extends RouteComponentProps {}
 
 const Home: React.FC<HomeProps> = () => {
   return (

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 
 import { CredentialKey } from '../../enums/Credentials';
-import { Lifx } from '../../types/lifx';
+import { ErrorResponse, Light, LightState, SetStateResponse } from '../../types/lifx';
 
 import CredentialsManager from '../CredentialsManager';
 
@@ -18,25 +18,22 @@ export default class LifxService {
     this.credentials = new CredentialsManager();
   }
 
-  async getLights(): Promise<Lifx.Light[] | Lifx.ErrorResponse> {
-    return this.call<void, Lifx.Light[]>({
+  async getLights(): Promise<Light[] | ErrorResponse> {
+    return this.call<void, Light[]>({
       url: 'https://api.lifx.com/v1/lights/all',
       method: 'PUT',
     });
   }
 
-  async setState(
-    selector: string,
-    state: Lifx.LightState,
-  ): Promise<Lifx.SetStateResponse | Lifx.ErrorResponse> {
-    return this.call<Lifx.LightState, Lifx.SetStateResponse>({
+  async setState(selector: string, state: LightState): Promise<SetStateResponse | ErrorResponse> {
+    return this.call<LightState, SetStateResponse>({
       url: `https://api.lifx.com/v1/lights/${selector}/state`,
       data: state,
       method: 'PUT',
     });
   }
 
-  async call<TData, TResponse>(args: CallArgs<TData>): Promise<TResponse | Lifx.ErrorResponse> {
+  async call<TData, TResponse>(args: CallArgs<TData>): Promise<TResponse | ErrorResponse> {
     const key = await this.credentials.getPassword(CredentialKey.LIFX_KEY);
 
     const options: AxiosRequestConfig = {

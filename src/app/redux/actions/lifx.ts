@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import LifxService from '@services/LifxService';
-import { Lifx } from '@src/types';
+import { Light } from '@src/types';
 
 type SetLightStateArgs = {
   selector: string;
@@ -20,7 +20,7 @@ export const getLights = createAsyncThunk('LIFX/GET_LIGHTS', () => {
 /**
  * Set the state of the light(s) matched by the selector.
  */
-export const setLightState = createAsyncThunk<Lifx.Light[], SetLightStateArgs>(
+export const setLightState = createAsyncThunk<Light[], SetLightStateArgs>(
   'LIFX/SET_STATE',
   async ({ selector, lightState }) => {
     await service.setLightState(selector, lightState);

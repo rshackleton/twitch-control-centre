@@ -1,4 +1,5 @@
 import { Box, FormControl, FormLabel, Heading, Switch, Textarea } from '@chakra-ui/core';
+import { RouteComponentProps } from '@reach/router';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -7,9 +8,7 @@ import { RootState } from '@redux/reducers';
 import { TwitchState } from '@redux/reducers/twitchReducer';
 import { useAppDispatch } from '@redux/store';
 
-interface TwitchProps {
-  path: string;
-}
+interface TwitchProps extends RouteComponentProps {}
 
 const Twitch: React.FC<TwitchProps> = () => {
   const { isEnabled, log } = useSelector<RootState, TwitchState>((state) => state.twitch);
