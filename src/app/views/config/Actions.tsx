@@ -23,6 +23,9 @@ const ActionsView: React.FC<ActionsViewProps> = () => {
       {showForm ? (
         <ActionForm
           initialData={editedItem}
+          onBack={(): void => {
+            setShowForm(false);
+          }}
           onSubmit={(data): void => {
             const newAction = {
               name: data.name,

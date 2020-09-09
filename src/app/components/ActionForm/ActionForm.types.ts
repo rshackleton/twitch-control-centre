@@ -8,5 +8,6 @@ export type ActionFormData = {
 
 export interface ActionFormProps {
   initialData: Partial<ActionFormData> | null;
+  onBack: () => void;
   onSubmit: (formData: ActionFormData) => void;
 }

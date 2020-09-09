@@ -5,5 +5,6 @@ export type RewardFormData = {
 
 export interface RewardFormProps {
   initialData: Partial<RewardFormData> | null;
+  onBack: () => void;
   onSubmit: (formData: RewardFormData) => void;
 }

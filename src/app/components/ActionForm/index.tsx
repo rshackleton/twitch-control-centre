@@ -1,4 +1,13 @@
-import { Button, FormLabel, Grid, GridColumn, Input, Text, Textarea } from '@chakra-ui/core';
+import {
+  Button,
+  FormLabel,
+  Grid,
+  GridColumn,
+  HStack,
+  Input,
+  Text,
+  Textarea,
+} from '@chakra-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -7,7 +16,7 @@ import RewardSelector from '@components/RewardSelector';
 
 import { ActionFormProps, ActionFormData } from './ActionForm.types';
 
-const ActionForm: React.FC<ActionFormProps> = ({ initialData, onSubmit }) => {
+const ActionForm: React.FC<ActionFormProps> = ({ initialData, onBack, onSubmit }) => {
   const { errors, handleSubmit, register } = useForm<ActionFormData>({
     defaultValues: initialData ?? {},
   });
@@ -81,7 +90,18 @@ const ActionForm: React.FC<ActionFormProps> = ({ initialData, onSubmit }) => {
       )}
 
       <GridColumn gridColumn="span 2">
-        <Button type="submit">Save</Button>
+        <HStack>
+          <Button type="submit">Save</Button>
+          <Button
+            type="button"
+            onClick={(event): void => {
+              event.preventDefault();
+              onBack();
+            }}
+          >
+            Back
+          </Button>
+        </HStack>
       </GridColumn>
     </Grid>
   );

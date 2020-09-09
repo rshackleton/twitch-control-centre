@@ -21,6 +21,9 @@ const RewardsView: React.FC<RewardsViewProps> = () => {
       {showForm ? (
         <RewardForm
           initialData={editedItem}
+          onBack={(): void => {
+            setShowForm(false);
+          }}
           onSubmit={(data): void => {
             appConfig?.setKey('rewards', {
               ...rewards,
