@@ -8,9 +8,9 @@ class MainWindow {
   constructor() {
     // Create the browser window.
     this.window = new BrowserWindow({
-      height: 600,
+      height: 720,
       show: false,
-      width: 800,
+      width: 1280,
       webPreferences: {
         enableRemoteModule: true,
         nodeIntegration: true,
