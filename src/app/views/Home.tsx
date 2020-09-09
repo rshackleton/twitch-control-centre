@@ -6,7 +6,7 @@ interface HomeProps extends RouteComponentProps {}
 
 const Home: React.FC<HomeProps> = () => {
   return (
-    <Box>
+    <Box p={4}>
       <Heading size="md">Home</Heading>
     </Box>
   );

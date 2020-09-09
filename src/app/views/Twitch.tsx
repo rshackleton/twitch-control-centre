@@ -16,7 +16,7 @@ const Twitch: React.FC<TwitchProps> = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <Box>
+    <Box p={4}>
       <Heading size="md" mb={4}>
         Twitch
       </Heading>

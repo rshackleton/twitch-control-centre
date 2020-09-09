@@ -8,7 +8,7 @@ interface CredentialsProps extends RouteComponentProps {}
 
 const Credentials: React.FC<CredentialsProps> = () => {
   return (
-    <Box height="100%" width="100%" display="grid">
+    <Box display="grid" p={4} height="100%" width="100%">
       <CredentialsForm />
     </Box>
   );
