@@ -2,6 +2,7 @@ import { ipcMain, BrowserWindow } from 'electron';
 import { PubSubRedemptionMessage, PubSubListener, PubSubMessage } from 'twitch-pubsub-client/lib';
 
 import { IpcChannels } from '../../enums/IpcChannels';
+import { LightState, AppTriggerType } from '../../types';
 
 import ConfigurationService from '../services/ConfigurationService';
 import LifxService from '../services/LifxService';
@@ -78,11 +79,23 @@ export default class TwitchHandler {
 
     // Trigger appropriate LIFX change.
     const appConfig = this.config.get();
-    const states = appConfig.lifxStates ?? {};
-    const state = states[message.rewardId];
-    const id = appConfig.selectedLightId;
+
+    const action = Object.values(appConfig.actions).find(
+      (action) =>
+        action.triggerType === AppTriggerType.REWARD &&
+        action.triggerData.rewardId === message.rewardId,
+    );
+
+    if (!action) {
+      console.log(`Action not found for reward id (${message.rewardId})`);
+      return;
+    }
+
+    const id = action.actionData.lightId as string;
+    const state = action.actionData.lightState as LightState;
 
     if (id && state) {
+      console.log(`Setting light state for light ${id}`);
       this.lifxService.setState(`id:${id}`, state);
     }
   }

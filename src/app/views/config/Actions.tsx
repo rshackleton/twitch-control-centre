@@ -27,17 +27,12 @@ const ActionsView: React.FC<ActionsViewProps> = () => {
             const newAction = {
               name: data.name,
               actionData: {
-                lightId: '',
-                lightState: {
-                  brightness: 1,
-                  color: '',
-                  duration: 1,
-                  power: 'on',
-                },
+                lightId: data.light,
+                lightState: JSON.parse(data.lightState),
               },
               actionType: AppActionType.LIFX,
               triggerData: {
-                rewardId: '',
+                rewardId: data.reward,
               },
               triggerType: AppTriggerType.REWARD,
             };
@@ -61,7 +56,14 @@ const ActionsView: React.FC<ActionsViewProps> = () => {
                 <Button
                   mr={2}
                   onClick={(): void => {
-                    setEditedItem({ id, name: action.name });
+                    setEditedItem({
+                      id,
+                      light: action.actionData.lightId as string,
+                      lightState: JSON.stringify(action.actionData.lightState, null, 2),
+                      name: action.name,
+                      reward: action.triggerData.rewardId as string,
+                    });
+
                     setShowForm(true);
                   }}
                 >

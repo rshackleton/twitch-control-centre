@@ -1,4 +1,4 @@
-import { CredentialKey } from '@src/enums/Credentials';
+import { CredentialKey } from '../enums/Credentials';
 
 import { LightState } from './lifx';
 
