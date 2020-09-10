@@ -1,30 +1,30 @@
-import {
-  Button,
-  FormLabel,
-  Grid,
-  GridColumn,
-  HStack,
-  Input,
-  Text,
-  Textarea,
-} from '@chakra-ui/core';
+import { Button, FormLabel, Grid, GridColumn, HStack, Input, Text, Select } from '@chakra-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import LightSelector from '@components/LifxLightSelector';
 import RewardSelector from '@components/RewardSelector';
+import ActionForms from '@components/ActionForms';
+import { AppActionFormData, AppActionType, AppTriggerType } from '@src/types';
 
-import { ActionFormProps, ActionFormData } from './ActionForm.types';
+import { ActionFormProps } from './ActionForm.types';
 
 const ActionForm: React.FC<ActionFormProps> = ({ initialData, onBack, onSubmit }) => {
-  const { errors, handleSubmit, register } = useForm<ActionFormData>({
+  const { errors, handleSubmit, register, setValue, watch } = useForm<AppActionFormData>({
     defaultValues: initialData ?? {},
   });
+
+  const rewardType = watch(
+    'actionType',
+    initialData?.actionType ?? AppActionType.LIFX,
+  ) as AppActionType;
+
+  const ActionFormComponent = ActionForms[rewardType];
 
   return (
     <Grid as="form" gap={4} noValidate templateColumns="1fr 1fr" onSubmit={handleSubmit(onSubmit)}>
       <input ref={register({ required: true })} id="id" name="id" type="hidden" />
 
+      {/* ACTION NAME */}
       <GridColumn>
         <FormLabel htmlFor="name">Action Name</FormLabel>
       </GridColumn>
@@ -41,54 +41,77 @@ const ActionForm: React.FC<ActionFormProps> = ({ initialData, onBack, onSubmit }
         </GridColumn>
       )}
 
+      {/* TRIGGER TYPE */}
       <GridColumn>
-        <FormLabel htmlFor="name">Reward</FormLabel>
+        <FormLabel htmlFor="triggerType">Trigger Type</FormLabel>
+      </GridColumn>
+      <GridColumn>
+        <Select
+          ref={register({ required: { message: 'Please select a trigger type.', value: true } })}
+          id="triggerType"
+          name="triggerType"
+        >
+          {Object.values(AppTriggerType).map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </Select>
+      </GridColumn>
+      {errors.triggerType && (
+        <GridColumn gridColumn="span 2">
+          {errors.triggerType && <Text color="tomato">{errors.triggerType.message}</Text>}
+        </GridColumn>
+      )}
+
+      {/* TRIGGER DATA */}
+      <GridColumn>
+        <FormLabel htmlFor="triggerData.rewardId">Reward</FormLabel>
       </GridColumn>
       <GridColumn>
         <RewardSelector
-          ref={register({ required: { message: 'Please select a reward trigger.', value: true } })}
-          id="reward"
-          name="reward"
+          ref={register({ required: { message: 'Please select a reward.', value: true } })}
+          id="triggerData.rewardId"
+          name="triggerData.rewardId"
         />
       </GridColumn>
-      {errors.reward && (
+      {errors.triggerData?.rewardId && (
         <GridColumn gridColumn="span 2">
-          {errors.reward && <Text color="tomato">{errors.reward.message}</Text>}
+          {errors.triggerData?.rewardId && (
+            <Text color="tomato">{errors.triggerData?.rewardId.message}</Text>
+          )}
         </GridColumn>
       )}
 
+      {/* ACTION TYPE */}
       <GridColumn>
-        <FormLabel htmlFor="name">Light</FormLabel>
+        <FormLabel htmlFor="actionType">Action Type</FormLabel>
       </GridColumn>
       <GridColumn>
-        <LightSelector
-          ref={register({ required: { message: 'Please select a light.', value: true } })}
-          id="light"
-          name="light"
-        />
+        <Select
+          ref={register({ required: { message: 'Please select a trigger type.', value: true } })}
+          id="actionType"
+          name="actionType"
+        >
+          {Object.values(AppActionType).map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </Select>
       </GridColumn>
-      {errors.light && (
+      {errors.actionType && (
         <GridColumn gridColumn="span 2">
-          {errors.light && <Text color="tomato">{errors.light.message}</Text>}
+          {errors.actionType && <Text color="tomato">{errors.actionType.message}</Text>}
         </GridColumn>
       )}
 
-      <GridColumn>
-        <FormLabel htmlFor="name">Light State</FormLabel>
-      </GridColumn>
-      <GridColumn>
-        <Textarea
-          ref={register({ required: { message: 'Please enter the light state.', value: true } })}
-          id="lightState"
-          name="lightState"
-        />
-      </GridColumn>
-      {errors.lightState && (
-        <GridColumn gridColumn="span 2">
-          {errors.lightState && <Text color="tomato">{errors.lightState.message}</Text>}
-        </GridColumn>
+      {/* ACTION DATA */}
+      {ActionFormComponent && (
+        <ActionFormComponent errors={errors} register={register} setValue={setValue} />
       )}
 
+      {/* SUBMIT */}
       <GridColumn gridColumn="span 2">
         <HStack>
           <Button type="submit">Save</Button>

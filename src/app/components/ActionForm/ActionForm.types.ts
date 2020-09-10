@@ -1,13 +1,7 @@
-export type ActionFormData = {
-  id: string;
-  light: string;
-  lightState: string;
-  name: string;
-  reward: string;
-};
+import { AppActionFormData } from '@src/types';
 
 export interface ActionFormProps {
-  initialData: Partial<ActionFormData> | null;
+  initialData: Partial<AppActionFormData> | null;
   onBack: () => void;
-  onSubmit: (formData: ActionFormData) => void;
+  onSubmit: (formData: AppActionFormData) => void;
 }

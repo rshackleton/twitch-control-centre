@@ -1,13 +1,18 @@
+// import Audic from 'audic/dist/index';
 import { ipcMain, BrowserWindow } from 'electron';
+import fs from 'fs';
+import util from 'util';
 import { PubSubRedemptionMessage, PubSubListener, PubSubMessage } from 'twitch-pubsub-client/lib';
 
 import { IpcChannels } from '../../enums/IpcChannels';
-import { LightState, AppTriggerType } from '../../types';
+import { LightState, AppTriggerType, AppActionType, AppAction } from '../../types';
 
 import ConfigurationService from '../services/ConfigurationService';
 import LifxService from '../services/LifxService';
 
 import TwitchApiClient from '../TwitchApiClient';
+
+const readFile = util.promisify(fs.readFile);
 
 const client = new TwitchApiClient();
 
@@ -91,12 +96,42 @@ export default class TwitchHandler {
       return;
     }
 
+    if (action.actionType === AppActionType.LIFX) {
+      console.log(`LIFX Action: ${action.actionData.lightId}`);
+      this.handleLifx(action);
+      return;
+    }
+
+    if (action.actionType === AppActionType.SFX) {
+      console.log(`SFX Action: ${action.actionData.audioFile}`);
+      this.handleSfx(action);
+      return;
+    }
+
+    console.log(`Unexpected action type: ${action.actionType}`);
+  }
+
+  async handleLifx(action: AppAction): Promise<void> {
     const id = action.actionData.lightId as string;
-    const state = action.actionData.lightState as LightState;
+    const state: LightState = {
+      brightness: action.actionData.brightness as number,
+      color: action.actionData.color as string,
+      duration: action.actionData.duration as number,
+      power: action.actionData.power as 'on' | 'off',
+    };
 
     if (id && state) {
       console.log(`Setting light state for light ${id}`);
       this.lifxService.setState(`id:${id}`, state);
     }
+  }
+
+  async handleSfx(action: AppAction): Promise<void> {
+    // @todo: Send the playback data to a separate hidden audio playback window.
+    const audioFilePath = action.actionData.audioFile as string;
+    const buffer = await readFile(audioFilePath);
+    const base64 = buffer.toString('base64');
+    const webContents = this.window?.webContents;
+    webContents?.send(IpcChannels.AUDIO_PLAY, `data:audio/mp3;base64,${base64}`);
   }
 }

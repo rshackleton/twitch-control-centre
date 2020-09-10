@@ -7,6 +7,7 @@ import installExtension, {
 import AuthHandler from './electron/ipc/AuthHandler';
 import ConfigHandler from './electron/ipc/ConfigHandler';
 import CredentialsHandler from './electron/ipc/CredentialsHandler';
+import FileHandler from './electron/ipc/FileHandler';
 import LifxHandler from './electron/ipc/LifxHandler';
 import TwitchHandler from './electron/ipc/TwitchHandler';
 
@@ -15,6 +16,7 @@ import MainWindow from './electron/MainWindow';
 const authHandler = new AuthHandler();
 const configHandler = new ConfigHandler();
 const credentialsHandler = new CredentialsHandler();
+const fileHandler = new FileHandler();
 const lifxHandler = new LifxHandler();
 const twitchHandler = new TwitchHandler();
 
@@ -34,6 +36,7 @@ app.on('ready', async () => {
   authHandler.register(mainWindow.window);
   configHandler.register();
   credentialsHandler.register();
+  fileHandler.register();
   lifxHandler.register();
   twitchHandler.register(mainWindow.window);
 

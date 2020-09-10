@@ -5,7 +5,6 @@ import { AppConfig } from '@src/types';
 
 const initialState: AppConfig = {
   actions: {},
-  lifxStates: {},
   rewards: {},
   selectedLightId: '',
 };

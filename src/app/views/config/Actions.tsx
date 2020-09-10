@@ -4,9 +4,8 @@ import { nanoid } from '@reduxjs/toolkit';
 import React, { Fragment, useState } from 'react';
 
 import ActionForm from '@components/ActionForm';
-import { ActionFormData } from '@components/ActionForm/ActionForm.types';
 import { useAppConfig } from '@components/AppConfigProvider';
-import { AppActionType, AppTriggerType } from '@src/types';
+import { AppActionFormData } from '@src/types';
 
 interface ActionsViewProps extends RouteComponentProps {}
 
@@ -15,7 +14,7 @@ const ActionsView: React.FC<ActionsViewProps> = () => {
 
   const actions = appConfig?.getKey('actions') ?? {};
 
-  const [editedItem, setEditedItem] = useState<Partial<ActionFormData> | null>(null);
+  const [editedItem, setEditedItem] = useState<Partial<AppActionFormData> | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   return (
@@ -27,22 +26,9 @@ const ActionsView: React.FC<ActionsViewProps> = () => {
             setShowForm(false);
           }}
           onSubmit={(data): void => {
-            const newAction = {
-              name: data.name,
-              actionData: {
-                lightId: data.light,
-                lightState: JSON.parse(data.lightState),
-              },
-              actionType: AppActionType.LIFX,
-              triggerData: {
-                rewardId: data.reward,
-              },
-              triggerType: AppTriggerType.REWARD,
-            };
-
             appConfig?.setKey('actions', {
               ...actions,
-              [data.id]: newAction,
+              [data.id]: data,
             });
 
             setShowForm(false);
@@ -59,14 +45,7 @@ const ActionsView: React.FC<ActionsViewProps> = () => {
                 <Button
                   mr={2}
                   onClick={(): void => {
-                    setEditedItem({
-                      id,
-                      light: action.actionData.lightId as string,
-                      lightState: JSON.stringify(action.actionData.lightState, null, 2),
-                      name: action.name,
-                      reward: action.triggerData.rewardId as string,
-                    });
-
+                    setEditedItem({ id, ...action });
                     setShowForm(true);
                   }}
                 >

@@ -1,4 +1,4 @@
-import { Select } from '@chakra-ui/core';
+import { Select, Spinner } from '@chakra-ui/core';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -19,6 +19,10 @@ const LightSelector = React.forwardRef<HTMLSelectElement, LightSelectorProps>(
     useEffect(() => {
       dispatch(actions.lifx.getLights());
     }, []);
+
+    if (!lights || !lights.length) {
+      return <Spinner />;
+    }
 
     return (
       <Select ref={ref} {...otherProps}>

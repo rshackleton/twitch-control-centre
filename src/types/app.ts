@@ -4,6 +4,7 @@ import { LightState } from './lifx';
 
 export enum AppActionType {
   LIFX = 'LIFX',
+  SFX = 'SFX',
 }
 
 export enum AppTriggerType {
@@ -35,10 +36,12 @@ export type AppAction = {
   triggerType: AppTriggerType;
 };
 
+export type AppActionFormData = AppAction & {
+  id: string;
+};
+
 export type AppConfig = {
   actions: Record<string, AppAction>;
-  lifxStates: Record<string, LightState>;
-  /** A set containing a map of ID to Name. */
   rewards: Record<string, string>;
   selectedLightId: string;
 };
